@@ -23,6 +23,6 @@ export const config = {
     // * - Images
     // * - Login
     // * - Homepage (represent with $ affter beginning /)
-    ''
+    '/((?!api|_next/static|_next/image|auth|favicon.ico|robots.txt|images|login|$).*)'
   ],
 };
