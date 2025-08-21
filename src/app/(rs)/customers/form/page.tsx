@@ -1,5 +1,6 @@
 import { getCustomer } from "@/lib/queries/getCustomers";
 import { BackButton } from "@/components/BackButton";
+import * as Sentry from "@sentry/nextjs"
 
 export default async function CustomerFormPage({
   searchParams,
@@ -25,11 +26,14 @@ export default async function CustomerFormPage({
       }
       console.log(customer)
       // put customer form component
+    } else {
+      // New customer form component
     }
 
     
   } catch (e) {
     if (e instanceof Error) {
+      Sentry.captureException(e);
       throw e;
     }
   }
