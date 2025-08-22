@@ -2,6 +2,7 @@ import { getTicket } from "@/lib/queries/getTicket";
 import { getCustomer } from "@/lib/queries/getCustomers";
 import { BackButton } from "@/components/BackButton";
 import * as Sentry from "@sentry/nextjs";
+import TicketForm from "@/app/(rs)/tickets/form/TicketForm";
 
 export default async function TicketFormPage({
   searchParams,
@@ -28,7 +29,7 @@ export default async function TicketFormPage({
         return (
           <>
             <h2 className="text-2xl mb-2">
-              Customer ID #{customerId} not found{" "}
+              Customer ID #{customerId} not found
             </h2>
             <BackButton title="Go Back" variant="default" />
           </>
@@ -39,7 +40,7 @@ export default async function TicketFormPage({
         return (
           <>
             <h2 className="text-2xl mb-2">
-              Customer ID #{customerId} is not active{" "}
+              Customer ID #{customerId} is not active
             </h2>
             <BackButton title="Go Back" variant="default" />
           </>
@@ -48,6 +49,7 @@ export default async function TicketFormPage({
 
       //  return ticket form
       console.log(customer);
+      return <TicketForm customer={customer}/>
     }
 
     // Edit ticket form
@@ -70,6 +72,7 @@ export default async function TicketFormPage({
       // return ticket form
       console.log("ticket: ", ticket);
       console.log("customer: ", customer);
+      return <TicketForm customer={customer} ticket={ticket}/>
     }
   } catch (e) {
     if (e instanceof Error) {
