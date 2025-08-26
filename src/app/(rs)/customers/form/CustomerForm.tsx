@@ -8,6 +8,9 @@ import { Button } from "@/components/ui/button";
 import { InputWithLabel } from "@/components/inputs/InputWithLabel";
 import { SelctWithLabel } from "@/components/inputs/SelectWithLabel";
 import { TextAreaWithLabel } from "@/components/inputs/TextAreaWithLabel";
+import { CheckBoxWithLabel } from "@/components/inputs/CheckBoxWithLabel";
+
+import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
 
 import { StatesArray } from "@/Constants/StatesArray";
 
@@ -22,6 +25,9 @@ type Props = {
 };
 
 export default function CustomerForm({ customer }: Props) {
+  const { getPermission, isLoading } = useKindeBrowserClient();
+  const isManager = !isLoading && getPermission("manager")?.isGranted;
+
   const defaultValues: insertCustomerSchemaType = {
     id: customer?.id,
     firstName: customer?.firstName ?? "",
@@ -50,7 +56,8 @@ export default function CustomerForm({ customer }: Props) {
   return (
     <div className="flex flex-col gap-1 sm:px-8">
       <h2 className="text-2xl font-bold">
-        {customer?.id ? "Edit" : "New"} Customer Form
+        {customer?.id ? "Edit" : "New"} Customer{" "}
+        {customer?.id ? `#${customer.id}` : "Form"}
       </h2>
       <Form {...form}>
         <form
@@ -102,6 +109,16 @@ export default function CustomerForm({ customer }: Props) {
               nameInSchema="notes"
               className="h-40"
             />
+            {isLoading ? (
+              <p>Loading...</p>
+            ) : isManager && customer?.id ? (
+              <CheckBoxWithLabel<insertCustomerSchemaType>
+                fieldTitle="Active"
+                nameInSchema="active"
+                message="Yes"
+              />
+            ) : null}
+
             <div className="flex gap-2">
               <Button
                 type="submit"
