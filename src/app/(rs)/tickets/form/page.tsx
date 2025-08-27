@@ -6,7 +6,6 @@ import TicketForm from "@/app/(rs)/tickets/form/TicketForm";
 
 import { Users, init as kindInit } from "@kinde/management-api-js";
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
-import { title } from "process";
 
 export async function generateMetada({ searchParams,
 }: {
