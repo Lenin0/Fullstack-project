@@ -69,15 +69,16 @@ export default function CustomerForm({ customer }: Props) {
       },
       onError({ error }) {
         // toast user
-        toast.error("Save Failed", {
-          description: "Error creating client"
+        toast.error("Error", {
+          description: "Save Failed"
         });
+
       }
   })
 
   async function submitForm(data: insertCustomerSchemaType) {
     // console.log(data);
-    executeSave(data);
+    executeSave({...data, firstName: '', Phone: ''});
   }
 
   return (

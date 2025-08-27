@@ -25,7 +25,7 @@ export const saveCustomerAction = actionClient
         const isAuth = await isAuthenticated()
         
         if (!isAuth) redirect('/login')
-
+            
         // New Customer
         if (customer.id === 0) {
             const result = await db.insert(customers).values({
