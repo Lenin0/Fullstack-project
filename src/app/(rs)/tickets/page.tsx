@@ -1,6 +1,8 @@
 import TicketsSearch from "@/app/(rs)/tickets/TicketSearch";
 import { getOpenTickets } from "@/lib/queries/getOpenTickets";
 import { getTicketsSearchResults } from "@/lib/queries/getTicketsSearchResults";
+import TicketTable from "@/app/(rs)/tickets/form/TicketTable";
+import * as Sentry from "@sentry/nextjs"
 
 export const metadata = {
   title: "Tickets Search",
@@ -18,19 +20,23 @@ export default async function Tickets({
     return (
       <>
         <TicketsSearch />
-        <p>{JSON.stringify(results)}</p>
+        {results.length ? <TicketTable data={results} /> : null}
       </>
     );
   }
 
   // query search results
+  const span = Sentry.startInactiveSpan({
+    name: 'getTicketsSearchResults-v1',
+  })
   const results = await getTicketsSearchResults(searchText);
+  span.end()
 
   // return search results
   return (
     <>
-      <TicketsSearch />
-      <p>{JSON.stringify(results)}</p>
+        <TicketsSearch />
+        {results.length ? <TicketTable data={results} /> : <p className="mt-4">No results found</p>}
     </>
   );
 }
