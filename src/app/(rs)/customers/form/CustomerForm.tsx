@@ -49,6 +49,8 @@ export default function CustomerForm({ customer }: Props) {
     active: customer?.active ?? true,
   };
 
+  console.log("defaultValues : ", defaultValues )
+
   const form = useForm<insertCustomerSchemaType>({
     mode: "onBlur",
     resolver: zodResolver(insertCustomerSchema),
@@ -62,8 +64,8 @@ export default function CustomerForm({ customer }: Props) {
     reset: resetSaveAction,
   } = useAction(saveCustomerAction, {
       onSuccess({ data }) {
-        // toast user
-        toast.success("Customer has been created", {
+     
+        toast.success("Sucess", {
           description: data?.message
         });
       },
@@ -77,8 +79,7 @@ export default function CustomerForm({ customer }: Props) {
   })
 
   async function submitForm(data: insertCustomerSchemaType) {
-    // console.log(data);
-    executeSave({...data, firstName: '', Phone: ''});
+    executeSave({...data});
   }
 
   return (
