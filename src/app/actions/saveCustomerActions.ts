@@ -31,7 +31,7 @@ export const saveCustomerAction = actionClient
             const result = await db.insert(customers).values({
                 firstName: customer.firstName,
                 lastName: customer.lastName,
-                email: customer.email,
+                email: customer.email.toLocaleLowerCase(),
                 Phone: customer.Phone,
                 adress1: customer.adress1,
                 adress2: customer.adress2 || '',
@@ -48,7 +48,7 @@ export const saveCustomerAction = actionClient
             .set({
                 firstName: customer.firstName,
                 lastName: customer.lastName,
-                email: customer.email,
+                email: customer.email.toLocaleLowerCase(),
                 Phone: customer.Phone,
                 adress1: customer.adress1,
                 adress2: customer.adress2?.trim() ?? null,
