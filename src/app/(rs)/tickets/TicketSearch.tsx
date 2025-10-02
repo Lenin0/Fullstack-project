@@ -9,7 +9,7 @@ export default function TicketsSearch() {
             className="flex gap-2 items-center"
         >
             <Input 
-                name="searchText"
+                name="search"
                 type="text"
                 placeholder="Search tickets"
                 className="w-full"

@@ -1,6 +1,6 @@
 "use client";
 
-import type { selectCustomerSchemaType } from "@/zod-schemas/customer";
+import type { TicketSearchResultsType } from "@/lib/queries/getTicketsSearchResults";
 
 import {
   createColumnHelper,
@@ -20,31 +20,68 @@ import {
 } from "@/components/ui/table";
 
 import { useRouter } from "next/navigation";
+import { CircleCheckIcon, CircleXIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 type Props = {
-  data: selectCustomerSchemaType[];
+  data: TicketSearchResultsType;
 };
 
-export default function CustomerTable({ data }: Props) {
+type RowType = TicketSearchResultsType[0];
+
+export default function TicketTable({ data }: Props) {
   const router = useRouter();
 
-  const columnHeadersArray: Array<keyof selectCustomerSchemaType> = [
+  const columnHeadersArray: Array<keyof RowType> = [
+    "ticketDate",
+    "title",
+    "tech",
     "firstName",
     "lastName",
     "email",
-    "Phone",
-    "city",
-    "zip",
+    "completed",
   ];
 
-  const columnHelper = createColumnHelper<selectCustomerSchemaType>();
+  const columnHelper = createColumnHelper<RowType>();
 
   const columns = columnHeadersArray.map((columnName) => {
-    return columnHelper.accessor(columnName, {
-      id: columnName,
-      header: columnName[0].toUpperCase() + columnName.slice(1),
-    });
+    return columnHelper.accessor(
+      (row) => {
+        // Transformational
+        const value = row[columnName];
+        if (columnName === "ticketDate" && value instanceof Date) {
+          return value.toLocaleDateString("en-US", {
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
+          });
+        }
+        if (columnName === "completed") {
+          return value ? "COMPLETED" : "OPEN";
+        }
+        return value;
+      },
+      {
+        id: columnName,
+        header: columnName[0].toUpperCase() + columnName.slice(1),
+        cell: ({ getValue }) => {
+          // presentational
+          const value = getValue();
+          if (columnName === "completed") {
+            return (
+              <div className="grid place-content-center">
+                {value === "OPEN" ? (
+                  <CircleXIcon className="opacity-25" />
+                ) : (
+                  <CircleCheckIcon className="text-green-600" />
+                )}
+              </div>
+            );
+          }
+          return value;
+        },
+      }
+    );
   });
 
   const table = useReactTable({
@@ -55,8 +92,8 @@ export default function CustomerTable({ data }: Props) {
         pageSize: 8,
       },
     },
-    getPaginationRowModel: getPaginationRowModel(),
     getCoreRowModel: getCoreRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
   });
 
   return (
@@ -87,7 +124,7 @@ export default function CustomerTable({ data }: Props) {
                 key={row.id}
                 className="cursor-pointer hover:bg-border/25 dark:hover:bg-ring/40"
                 onClick={() =>
-                  router.push(`/customers/form?customerId=${row.original.id}`)
+                  router.push(`/tickets/form?ticketId=${row.original.id}`)
                 }
               >
                 {row.getVisibleCells().map((cell) => (
@@ -100,7 +137,8 @@ export default function CustomerTable({ data }: Props) {
           </TableBody>
         </Table>
       </div>
-      <div className=" flex justify-between items-center">
+
+      <div className="flex justify-between items-center">
         <div className="flex basis-1/3 items-center">
           <p className="whitespace-nowrap font-bold">
             {`Page ${
@@ -114,7 +152,7 @@ export default function CustomerTable({ data }: Props) {
             }]`}
           </p>
         </div>
-        <div className="sspace-x-1">
+        <div className="space-x-1">
           <Button
             variant="outline"
             onClick={() => table.previousPage()}
